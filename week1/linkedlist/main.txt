@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include"linkedList.h"
+#include<conio.h>
+int main(void) {
+	char n; //输入一个字符对应相应的功能
+	LinkedList *L;
+	L = (LinkedList)malloc(sizeof(LNode));
+	LinkedList Head = *L;
+	printf("输入的结果为下表\n");
+	printf("a.初始化链表\nb.插入节点\nc.输出链表\nd.反向链接列表\ne.调换奇偶顺序\nf.找到中间节点\ng.删除节点并返回值\n");
+	printf("h.判断链表是否成环\ni.销毁链表，结束进程\n");
+	while (n = _getch()) {
+		switch (n) {
+		case 'a':InitList(&L);break;
+		case 'b': {
+			LinkedList p,q;
+			q = (LinkedList)malloc(sizeof(LNode));
+			int m, n;
+			printf("请分别输入要插入哪个节点的data和插入节点的data\n");
+			scanf_s("%d%d", &m, &n);
+			p = Head->next;
+			while (p->data != m) p = p->next;
+			q->data = n;
+			InsertList(p,q);
+			break;
+		}
+		case 'c':  TraverseList(Head, &visit); break;
+		case'd':ReverseList(*L); break;
+		case'e':ReverseEvenList(*L); break;
+		case'f':FindMidNode(*L); break;
+		case'g': {
+			LinkedList p;
+			int m,e = 0;
+			printf("请分别输入要删除节点前一个结点的data\n");
+			scanf_s("%d", &m);
+			p = (*L)->next;
+			while (p->data != m) p = p->next;
+			DeleteList(p, e);
+			break;
+		}
+		case'h':IsLoopList(Head); break;
+		default:DestroyList(*L);
+		}
+		if (n != 'i') continue;
+	}
+	
+	
+	return 0;
+}

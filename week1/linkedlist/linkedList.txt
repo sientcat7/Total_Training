@@ -1,0 +1,221 @@
+#include "linkedList.h"
+#include<stdio.h>
+#include<stdlib.h>
+
+/**
+ *  @name        : Status InitList(LinkList *L);
+ *	@description : initialize an empty linked list with only the head node without value
+ *	@param		 : L(the head node)
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status InitList(LinkedList* L) {
+	LinkedList p;
+	int data;
+	
+	(*L)->next = NULL;
+	scanf_s("%d", &data);
+	while(data != 9999){
+		p = (LinkedList)malloc(sizeof(LNode));
+		p->data = data;
+		p->next = (*L)->next;
+		(*L)->next = p;
+		scanf_s("%d",&data);
+	}
+	printf("successful\n");
+	return SUCCESS;
+}
+
+/**
+ *  @name        : void DestroyList(LinkedList *L)
+ *	@description : destroy a linked list, free all the nodes
+ *	@param		 : L(the head node)
+ *	@return		 : None
+ *  @notice      : None
+ */
+void DestroyList(LinkedList* L) {
+	LinkedList p, q;
+	p = *L;
+	while (p) {
+		q = p->next;
+		free(p);
+		p = q;
+	}
+}
+
+/**
+ *  @name        : Status InsertList(LNode *p, LNode *q)
+ *	@description : insert node q after node p
+ *	@param		 : p, q
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status InsertList(LNode* p, LNode* q) {
+	if (p == NULL) return ERROR;
+	else {
+		LinkedList r;
+		r = p->next;
+		p->next = q;
+		q->next = r;
+		return SUCCESS;
+	}
+}
+/**
+ *  @name        : Status DeleteList(LNode *p, ElemType *e)
+ *	@description : delete the first node after the node p and assign its value to e
+ *	@param		 : p, e 
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status DeleteList(LNode* p, ElemType* e) {
+	if (!p->next)   return ERROR;
+	else {
+		if (!p->next->next) {
+			LinkedList q, r;
+			q = p->next;
+			r = q->next;
+			int temp = q->data;
+			free(q);
+			p->next = r;
+			e = &temp;
+			printf("%d", *e);
+			return SUCCESS;
+		}
+		else {
+			LinkedList s;
+			s = p->next;
+			int temp = s->data;
+			free(s);
+			p->next = NULL;
+			e = &temp;
+			printf("%d", *e);
+			return SUCCESS;
+		}
+	}
+}
+
+/**
+ *  @name        : void (*visit)(ElemType e)
+ *	@description : find the middle node in the linked list
+ *	@param		 : L(the head node)
+ *	@return		 : LNode
+ *  @notice      : choose to finish
+ */
+void visit (ElemType e){
+	printf("%d",e);
+}
+
+/**
+ *  @name        : void TraverseList(LinkedList L, void (*visit)(ElemType e))
+ *	@description : traverse the linked list and call the funtion visit
+ *	@param		 : L(the head node), visit
+ *	@return		 : None
+ *  @notice      : None
+ */
+void TraverseList(LinkedList L, void (*visit)(ElemType e)) {
+	LinkedList p = L->next;
+	do {
+		(visit)(p->data);
+		p = p->next;
+	} while (p);
+}
+
+/**
+ *  @name        : Status SearchList(LinkedList L, ElemType e)
+ *	@description : find the first node in the linked list according to e
+ *	@param		 : L(the head node), e
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status SearchList(LinkedList L, ElemType e) {
+	while (L->next != NULL) {
+		if (L->data == e) return SUCCESS;
+		L = L->next;
+	}
+	return ERROR;
+}
+
+/**
+ *  @name        : Status ReverseList(LinkedList *L)
+ *	@description : reverse the linked list
+ *	@param		 : L(the head node)
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status ReverseList(LinkedList* L) {
+	LinkedList p, q, r;
+	p = *L;
+	if (p->next == NULL) return ERROR;
+	else
+	{
+		q = p->next;
+		p->next = NULL;
+		while (q != NULL) {
+			r = q;
+			if(!q->next)q = q->next;
+			r->next = p;
+			p = r;
+		}
+		return SUCCESS;
+		
+	}
+}
+
+/**
+ *  @name        : Status IsLoopList(LinkedList L)
+delete the first node after the node p and assign its value to e *	@description : judge whether the linked list is looped
+ *	@param		 : L(the head node)
+ *	@return		 : Status
+ *  @notice      : None
+ */
+Status IsLoopList(LinkedList L) {
+	LinkedList fast = L, slow = L;
+	while (fast&&fast->next) {
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow) return SUCCESS;
+	}
+	printf("no loop\n");
+	return ERROR;
+}
+
+/**
+ *  @name        : LNode* ReverseEvenList(LinkedList *L)
+ *	@description : reverse the nodes which value is an even number in the linked list, input: 1 -> 2 -> 3 -> 4  output: 2 -> 1 -> 4 -> 3
+ *	@param		 : L(the head node)
+ *	@return		 : LNode(the new head node)
+ *  @notice      : choose to finish
+ */
+LNode* ReverseEvenList(LinkedList* L) {
+	LinkedList p, q;
+	int temp = 0;
+	p = (*L)->next;
+	q = p->next;
+	while (q) {
+			p->data = temp;
+			p->data = q->data;
+			q->data = temp;
+			p = q->next;
+			q = p->next;
+		}
+	return *L;
+}
+
+/**
+ *  @name        : LNode* FindMidNode(LinkedList *L)
+ *	@description : find the middle node in the linked list
+ *	@param		 : L(the head node)
+ *	@return		 : LNode
+ *  @notice      : choose to finish
+ */
+LNode* FindMidNode(LinkedList* L) {
+	LinkedList fast = *L, slow = *L;
+	//当节点的个数为偶数则fast对应的节点为靠前的那个
+	while (fast->next) {
+		fast = fast->next;
+		slow = slow->next;
+		if (fast->next) fast = fast->next;
+	}
+	return slow;
+}
+
